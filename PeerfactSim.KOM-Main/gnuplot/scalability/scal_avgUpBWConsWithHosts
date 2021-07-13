@@ -1,0 +1,9 @@
+fileName="scal_avgUpBWConsWithHosts"
+outputFileName=fileName
+set nolog y
+set yrange [0:1]
+set ylabel "Average Upstream Bandwidth Consumption (%)"
+
+set key right
+
+load "renderMetricCommon.part"

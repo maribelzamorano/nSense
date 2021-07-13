@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Configuration>
+	<Default>
+		<Variable name="seed" value="12" />
+		<Variable name="size" value="100" />
+		<Variable name="finishTime" value="5m" />
+		<Variable name="actions" value="config/IDO/actions.dat" />
+		<Variable name="gnpDataFile" value="data/measured_data.xml" />
+		
+		<Variable name="nSenseProperties" value="config/IDO/nSense.properties" />
+		<Variable name="MOVE_SPEED_LIMIT" value="4" />
+		<Variable name="DIMENSION" value="2" />
+		<Variable name="SPEED_CHANGING_RATE_PER_MOVE" value="0.02" />
+		<Variable name="intervalBetweenStatisticGeneration" value="5s" />
+		
+	</Default>
+	
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime" />
+
+
+	<NetLayer class="de.tud.kom.p2psim.impl.network.modular.ModularNetLayerFactory" downBandwidth="10165793" upBandwidth="6280818" useRegionGroups="false" useInOrderDelivery="true">
+	   <PacketSizing class="de.tud.kom.p2psim.impl.network.modular.st.packetSizing.IPv4Header"/>
+	   <Fragmenting class="de.tud.kom.p2psim.impl.network.modular.st.fragmenting.NoFragmenting"/>
+	   <TrafficControl class="de.tud.kom.p2psim.impl.network.modular.st.trafCtrl.BoundedTrafficQueue" maxTimeSend="3s" maxTimeReceive="3s"/>
+	   <PLoss class="de.tud.kom.p2psim.impl.network.modular.st.ploss.StaticPacketLoss" ratio="0.02"/>
+	   <Latency class="de.tud.kom.p2psim.impl.network.modular.st.latency.StaticLatency" propagationDelay="30ms"/>
+	   <Jitter class="de.tud.kom.p2psim.impl.network.modular.st.jitter.NoJitter"/>
+	   <Positioning class="de.tud.kom.p2psim.impl.network.modular.st.positioning.TorusPositioning"/>
+	</NetLayer>
+ 
+	
+
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+	
+	<NodeFactory class="de.tu.darmstadt.dvs.nSense.overlay.NSenseNodeFactory" properties="$nSenseProperties">
+		<BootstrapManager class="de.tu.darmstadt.dvs.nSense.overlay.NSenseBootstrapManager"/>
+	</NodeFactory>	
+	
+	<!-- Application with RandomPathMoveModel/RandomWaypointMoveModel -->
+	<Application class="de.tu.darmstadt.dvs.nSense.application.IDOApplicationFactoryNDim" 
+		intervalBetweenMove="200ms">
+			<MoveModel class="de.tu.darmstadt.dvs.nSense.application.moveModels.RandomPathMoveModelNDim" 
+				dimension="$DIMENSION"
+				moveSpeedLimit="$MOVE_SPEED_LIMIT"
+			/>
+		<PositionDistribution class="de.tu.darmstadt.dvs.nSense.application.moveModels.RandomPositionDistributionNDim"
+			dimension="$DIMENSION" 
+			/>
+	</Application>
+
+	 <Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="0m" stop="$finishTime">
+		<Analyzer
+			class="de.tu.darmstadt.dvs.nSense.overlay.evaluation.EvaluationControlAnalyzer"  measurementInterval="$intervalBetweenStatisticGeneration">
+			<IDOOracleNDim class="de.tu.darmstadt.dvs.nSense.overlay.NSenseOracle"/>
+		</Analyzer>
+	</Monitor>
+	
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="$size">
+		
+		<!-- Create one Group with the the size $size	-->
+		<Group size="$size" groupID="ExampleGroup">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<Application />
+			<Properties enableChurn="false" />
+		</Group>
+
+	</HostBuilder>
+
+	<GlobalOracle class="de.tud.kom.p2psim.impl.util.oracle.GlobalOracle" />
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions" componentClass="de.tu.darmstadt.dvs.nSense.application.IDOApplicationNDim">
+	</Scenario>
+		
+</Configuration>

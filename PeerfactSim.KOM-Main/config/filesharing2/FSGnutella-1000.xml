@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration>
+	<!-- Description of the Simulation -->
+	<Description>Simulation of a P2P filesharing application on top of
+		Gnutella</Description>
+
+	<!-- Here the variables are defined. They can be referred as "&variable-name" 
+		and overridden via -->
+	<Default>
+		<Variable name="seed" value="17" />
+		<Variable name="style" value="s" />
+		<Variable name="description" value="HX-20-v5-4h" />
+		<Variable name="size" value="1000" />
+		<Variable name="churnStart" value="120m" />
+		<Variable name="measurementStart" value="180m" />
+		<Variable name="finishTime" value="300m" />
+		<Variable name="actions"
+			value="config/filesharing2/filesharing2-actions-1000.dat" />
+		<Variable name="NetLayer" value="Mod" />
+	</Default>
+
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime">
+	</SimulatorCore>
+
+	<IfEqualStr arg0="$NetLayer" arg1="Mod">
+
+		<NetLayer
+			class="de.tud.kom.p2psim.impl.network.modular.ModularNetLayerFactory"
+			preset="GNP" useRegionGroups="false" useInOrderDelivery="true">
+			<BandwidthDetermination
+				class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+			<MeasurementDB
+				class="de.tud.kom.p2psim.impl.network.modular.db.NetMeasurementDB"
+				file="data/mod_measured_data.xml" />
+		</NetLayer>
+
+	</IfEqualStr>
+
+	<IfEqualStr arg0="$NetLayer" arg1="GNP">
+		<NetLayer class="de.tud.kom.p2psim.impl.network.gnp.GnpNetLayerFactory"
+			gnpFile="data/measured_data.xml">
+			<LatencyModel class="de.tud.kom.p2psim.impl.network.gnp.GnpLatencyModel"
+				usePingErRttData="false" usePingErJitter="false"
+				usePingErPacketLoss="true" />
+			<BandwidthManager
+				class="de.tud.kom.p2psim.impl.network.gnp.GnpNetBandwidthManagerPeriodical" />
+			<BandwidthDetermination
+				class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+		</NetLayer>
+
+	</IfEqualStr>
+
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+
+	<NodeFactory
+		class="de.tud.kom.p2psim.impl.overlay.gnutella.gnutella06.Gnutella06Factory" />
+
+	<FilesharingApplication
+		class="de.tud.kom.p2psim.impl.application.filesharing2.FilesharingApplicationFactory" />
+
+	<ResourceSpace
+		class="de.tud.kom.p2psim.impl.application.filesharing2.documents.DocumentSpace"
+		static="getInstance" useRanks="true">
+
+		<ResourceSet
+			class="de.tud.kom.p2psim.impl.application.filesharing2.documents.ZipfDocumentSet"
+			name="files1" size="$size" zipfExp="0.7" meanReorderIntvl="10m" />
+		<ResourceSet
+			class="de.tud.kom.p2psim.impl.application.filesharing2.documents.ZipfDocumentSet"
+			name="files2" size="$size" zipfExp="0.7" meanReorderIntvl="10m" />
+	</ResourceSpace>
+
+	<Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="$measurementStart" stop="$finishTime">
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.application.filesharing2.OperationDumper" />
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.analyzer.csvevaluation.specific.FSGnuplotAnalyzer"
+			start="$measurementStart" interval="20m" outputFile="fs_gnutella/defaults_time"
+			action="append" />
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.analyzer.csvevaluation.MessageCounter"
+			hostCount="$size" fileName="fs_gnutella/messages" />
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.analyzer.csvevaluation.distribution.BandwidthDistAnalyzer"
+			start="$measurementStart" interval="120m" outputFile="fs_gnutella/BWDist_1000"
+			action="overwrite" />
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.analyzer.csvevaluation.distribution.BandwidthConsDistAnalyzer"
+			start="$measurementStart" interval="120m" outputFile="fs_gnutella/BWConsDist_1000"
+			action="overwrite" />
+
+	</Monitor>
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="$size">
+
+		<Group groupID="Ecuador" size="1">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+
+		<Group groupID="Ukraine" size="3">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+
+		<Group groupID="Denmark" size="6">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+
+		<Group groupID="Brazil" size="22">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+
+		<Group groupID="Poland" size="68">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+
+		<Group groupID="Malaysia" size="216">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+
+		<Group groupID="France" size="684">
+			<NetLayer />
+			<TransLayer />
+			<NodeFactory />
+			<FilesharingApplication />
+		</Group>
+	</HostBuilder>
+
+	<ChurnGenerator class="de.tud.kom.p2psim.impl.churn.DefaultChurnGenerator"
+		start="$churnStart" stop="$finishTime">
+		<ChurnModel class="de.tud.kom.p2psim.impl.churn.ExponentialChurnModel"
+			churnFactor="0.5" meanSessionLength="60m" />
+	</ChurnGenerator>
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions"
+		componentClass="de.tud.kom.p2psim.impl.overlay.gnutella.gnutella06.AbstractGnutella06Node"
+		additionalClasses="de.tud.kom.p2psim.impl.application.filesharing2.FilesharingApplication">
+	</Scenario>
+</Configuration>

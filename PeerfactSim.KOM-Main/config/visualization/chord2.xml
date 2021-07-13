@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration>
+	<Description>
+		A simple Chord ring intended for demonstration purposes
+		with the Visualization.
+	</Description>
+	<Default>
+		<Variable name="seed" value="0" />
+		<Variable name="size" value="50" />
+		<Variable name="finishTime" value="70m" />
+		<Variable name="actions" value="config/visualization/chord2-actions.dat" />
+		<Variable name="churn" value="true" />
+	</Default>
+
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime">
+	</SimulatorCore>
+
+	<NetLayer class="de.tud.kom.p2psim.impl.network.simple.SimpleNetFactory"
+		downBandwidth="200" upBandwidth="100">
+		<LatencyModel
+			class="de.tud.kom.p2psim.impl.network.simple.SimpleStaticLatencyModel"
+			latency="10" />
+	</NetLayer>
+
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+
+	<Overlay
+		class="de.tud.kom.p2psim.impl.overlay.dht.chord2.components.ChordNodeFactory"
+		port="400" />
+
+
+	<Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="0" stop="$finishTime">
+
+		<Analyzer class="de.tud.kom.p2psim.impl.vis.analyzer.VisAnalyzer">
+			<OverlayAdapter
+				class="de.tud.kom.p2psim.impl.overlay.dht.chord2.vis.ChordAdapter" />
+		</Analyzer>
+
+	</Monitor>
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="$size">
+
+		<Host groupID="GlasgowCity">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Host>
+
+		<!-- LatinAmerica max Groupsize = 6838 -->
+		<Group groupID="LatinAmerica" size="19">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+		<!-- Germany max Groupsize = 2912 -->
+		<Group groupID="Germany" size="10">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+		<!-- Florida max Groupsize = 4792 -->
+		<Group groupID="Florida" size="10">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+		<!-- NewYork max Groupsize = 3784 -->
+		<Group groupID="NewYork" size="10">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+	</HostBuilder>
+
+	<VisualizationHelper class="de.tud.kom.p2psim.impl.util.oracle.GlobalOracle" />
+
+	<ChurnGenerator class="de.tud.kom.p2psim.impl.churn.DefaultChurnGenerator"
+		start="50m" stop="60m">
+		<ChurnModel class="de.tud.kom.p2psim.impl.churn.StaticChurnModel" />
+	</ChurnGenerator>
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions"
+		componentClass="de.tud.kom.p2psim.impl.overlay.dht.chord2.components.ChordNode">
+	</Scenario>
+
+</Configuration>

@@ -1,0 +1,6 @@
+load 'stabilize.plt'
+load 'message.plt'
+load 'messageTraffic.plt'
+load 'lookupHopAvg.plt'
+load 'lookupRation.plt'
+load 'peer.plt'

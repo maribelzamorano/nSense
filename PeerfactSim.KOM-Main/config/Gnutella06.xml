@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration>
+	<!-- Description of the Simulation -->
+	<Description>Simulation of Gnutella 0.6 with 200 nodes without churn
+	</Description>
+	<!-- Here the variables are defined. They can be referred as "&variable-name" 
+		and overridden via -->
+	<Default>
+		<Variable name="seed" value="0" />
+		<Variable name="size" value="200" />
+		<Variable name="finishTime" value="200m" />
+		<Variable name="actions" value="config/Gnutella06-actions.dat" />
+		<Variable name="gnpDataFile" value="data/measured_data.xml" />
+
+	</Default>
+
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime"
+		statusInterval="1h">
+	</SimulatorCore>
+
+	<NetLayer class="de.tud.kom.p2psim.impl.network.gnp.GnpNetLayerFactory"
+		gnpFile="$gnpDataFile" downBandwidth="200" upBandwidth="100">
+		<LatencyModel class="de.tud.kom.p2psim.impl.network.gnp.GnpLatencyModel" />
+	</NetLayer>
+
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+
+	<ComponentFactory
+		class="de.tud.kom.p2psim.impl.overlay.gnutella.gnutella06.Gnutella06Factory" />
+
+
+	<Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="0" stop="$finishTime">
+	</Monitor>
+
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="$size">
+
+
+		<Group groupID="France" size="100">
+			<NetLayer />
+			<TransLayer />
+			<ComponentFactory />
+		</Group>
+
+		<Group groupID="Germany" size="100">
+			<NetLayer />
+			<TransLayer />
+			<ComponentFactory />
+		</Group>
+	</HostBuilder>
+
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions"
+		componentClass="de.tud.kom.p2psim.impl.overlay.gnutella.gnutella06.AbstractGnutella06Node">
+	</Scenario>
+</Configuration>

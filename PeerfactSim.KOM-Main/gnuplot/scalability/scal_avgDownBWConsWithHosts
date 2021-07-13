@@ -1,0 +1,9 @@
+fileName="scal_avgDownBWConsWithHosts"
+outputFileName=fileName
+set nolog y
+set yrange [0:1]
+set ylabel "Average Downstream Bandwidth Consumption (%)"
+
+set key right
+
+load "renderMetricCommon.part"

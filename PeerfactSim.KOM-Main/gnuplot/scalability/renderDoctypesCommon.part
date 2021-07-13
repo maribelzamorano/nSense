@@ -1,0 +1,29 @@
+set style fill solid border -1
+set boxwidth 0.9
+set xtics ("300 docs" 1.5, "20000 docs" 6.5, "Uniques" 11.5)
+set term postscript eps enhanced color "Helvetica, 16" size 7cm, 8cm
+set output outputFile . ".eps"
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+inputfile1="../../outputs/".overlayName1."/".fileName
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+inputfile2="../../outputs/".overlayName2."/".fileName
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+inputfile3="../../outputs/".overlayName3."/".fileName
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+inputfile4="../../outputs/".overlayName4."/".fileName
+
+plot inputfile1 using ($2*5):4:3:5:(0.9) title overlayNiceName1 with boxerrorbars fs pattern 1, \
+ inputfile2 using ($2*5 +1):4:3:5:(0.9) title overlayNiceName2 with boxerrorbars fs pattern 2, \
+ inputfile3 using ($2*5 +2):4:3:5:(0.9) title overlayNiceName3 with boxerrorbars fs pattern 5, \
+ inputfile4 using ($2*5 +3):4:3:5:(0.9) title overlayNiceName4 with boxerrorbars fs pattern 4
+ 	
+system 'epstopdf '.outputFile . ".eps"
+system 'rm '.outputFile . ".eps"

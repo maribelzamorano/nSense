@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="PeerfactSim.KOM">
+	<property environment="env" />
+	<property name="ECLIPSE_HOME" value="../../../../../usr/lib/eclipse" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	<path id="PeerfactSim.KOM.classpath">
+		<pathelement location="bin" />
+		<pathelement location="lib/commons-math-1.1.jar" />
+		<pathelement location="lib/dom4j-1.6.1.jar" />
+		<pathelement location="lib/log4j.jar" />
+		<pathelement location="lib/ssj.jar" />
+		<pathelement location="lib/jcommon-1.0.10.jar" />
+		<pathelement location="lib/jfreechart-1.0.6.jar" />
+		<pathelement location="lib/stax-utils.jar" />
+		<pathelement location="lib/opencsv-2.3.jar" />
+	</path>
+	<target name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target depends="build-subprojects,build-project" name="build" />
+	<target name="build-subprojects" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+			<src path="src" />
+			<classpath refid="PeerfactSim.KOM.classpath" />
+		</javac>
+	</target>
+	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects" />
+	<target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+		<copy todir="${ant.library.dir}">
+			<fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar" />
+		</copy>
+		<unzip dest="${ant.library.dir}">
+			<patternset includes="jdtCompilerAdapter.jar" />
+			<fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar" />
+		</unzip>
+	</target>
+	<target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+		<antcall target="build" />
+	</target>
+	<target name="PeerfactSimKOM">
+		<java classname="de.tud.kom.p2psim.GUIRunner" failonerror="true" fork="yes">
+			<jvmarg line="-Xmx400m -Xms200m" />
+			<classpath refid="PeerfactSim.KOM.classpath" />
+		</java>
+	</target>
+	<target name="PeerfactSimKOM-Headless">
+		<java classname="de.tud.kom.p2psim.SimulatorRunner" failonerror="true" fork="yes">
+			<arg value="config/chord.xml"/>
+			<jvmarg line="-Xmx400m -Xms200m" />
+			<classpath refid="PeerfactSim.KOM.classpath" />
+		</java>
+	</target>
+</project>

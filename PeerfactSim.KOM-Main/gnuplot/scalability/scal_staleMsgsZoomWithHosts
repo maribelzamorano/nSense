@@ -1,0 +1,9 @@
+fileName="scal_staleMsgsWithHosts"
+outputFileName="scal_staleMsgsZoomWithHosts"
+set yrange [0:1.5]
+set nolog y
+set ylabel "Stale Messages (%)"
+
+set key right
+
+load "renderMetricCommon.part"

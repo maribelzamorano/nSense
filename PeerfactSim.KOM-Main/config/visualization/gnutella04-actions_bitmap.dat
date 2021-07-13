@@ -1,0 +1,20 @@
+_ECHO 1s "Simulation Started"
+
+Bootstrap1 1s registerBootstrap
+Bootstrap2 7s registerBootstrap
+Group1 2s startScheduleConnecting 10s
+Group4 5s startScheduleConnecting 12s
+Group2 10s startScheduleConnecting 10s
+Group3 13s startScheduleConnecting 10s
+Group1 10m startScheduleApplication 10s
+Group2 10m startScheduleApplication 10s
+Group3 10m startScheduleApplication 10s
+Group4 10m startScheduleApplication 10s
+Group1 12m startScheduleState 10s
+Group2 12m startScheduleState 10s
+Group3 12m startScheduleState 10s
+Group4 12m startScheduleState 10s
+Group1 13m startScheduleApplication 10s
+Group2 13m startScheduleApplication 10s
+Group3 13m startScheduleApplication 10s
+Group4 13m startScheduleApplication 10s

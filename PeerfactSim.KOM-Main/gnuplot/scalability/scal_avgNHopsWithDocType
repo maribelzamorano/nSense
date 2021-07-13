@@ -1,0 +1,7 @@
+fileName="scal_avgNHopsWithDocType"
+outputFile="../outputs/scal_avgNHopsWithDocType"
+set yrange [0.8:2000]
+set log y
+set ylabel "Average Number of Hops"
+
+load "renderDoctypesCommon.part"

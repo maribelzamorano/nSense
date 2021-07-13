@@ -1,0 +1,10 @@
+fileName="scal_qrtWithHosts"
+outputFileName=fileName
+set log y
+set yrange [0.07:10]
+set ylabel "Average Query Response Time (s)"
+
+set key left
+
+load "renderMetricCommon.part"
+

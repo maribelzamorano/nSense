@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+	<Description>
+		A simple Chord Ring with a commented Config-File to help
+		with configuration of your own Simulation
+	</Description>
+
+	<!-- In the "default"-section you may define variables to be used throughout 
+		your config by preceeding the name with a dollar sign -->
+	<Default>
+		<!-- This is the Seed for generation of random numbers. If you choose the 
+			same seed during your simulations, you will end up with the same sequence 
+			of random numbers -->
+		<Variable name="seed" value="500" />
+
+		<!-- In this example 40 minutes are simulated -->
+		<Variable name="finishTime" value="120m" />
+
+		<!-- The actions-File can be found in this folder. It contains all actions 
+			that are to be executed during the simulation -->
+		<Variable name="actions" value="config/chord-actions.dat" />
+
+		<!-- The GNP-Data-File is used by the NetLayer for calculation of Latency 
+			and Jitter -->
+		<Variable name="gnpDataFile" value="data/mod_measured_data.xml" />
+
+		<!-- Variable for enabling churn -->
+		<Variable name="churn" value="true" />
+	</Default>
+
+	<!-- Load the simulator-Engine and provide it with the seed and the duration. 
+		Notice the usage of variables. -->
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime" />
+
+
+	<!-- Configure the NetLayer (in this case the ModularNetLayer). For a list 
+		of available configurations have a look at the PeerfactSim-Documentation -->
+	<NetLayer
+		class="de.tud.kom.p2psim.impl.network.modular.ModularNetLayerFactory"
+		downBandwidth="122880" upBandwidth="32768" useRegionGroups="false"
+		useInOrderDelivery="false" preset="Fundamental">
+		<!-- Loads a XML-File with measurement-data for latency etc. -->
+		<MeasurementDB
+			class="de.tud.kom.p2psim.impl.network.modular.db.NetMeasurementDB"
+			file="$gnpDataFile" />
+		<PacketSizing
+			class="de.tud.kom.p2psim.impl.network.modular.st.packetSizing.IPv4Header" />
+		<Fragmenting
+			class="de.tud.kom.p2psim.impl.network.modular.st.fragmenting.IPv4Fragmenting" />
+		<TrafficControl
+			class="de.tud.kom.p2psim.impl.network.modular.st.trafCtrl.BoundedTrafficQueue" />
+		<PLoss
+			class="de.tud.kom.p2psim.impl.network.modular.st.ploss.PingErPacketLoss" />
+		<Latency
+			class="de.tud.kom.p2psim.impl.network.modular.st.latency.GNPLatency" />
+		<Jitter
+			class="de.tud.kom.p2psim.impl.network.modular.st.jitter.PingErJitter" />
+		<Positioning
+			class="de.tud.kom.p2psim.impl.network.modular.st.positioning.GNPPositioning" />
+	</NetLayer>
+
+	<!-- Configure the Transport-Layer -->
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+
+	<!-- Configure your overlay, in this case CORD. Consult the Peerfact-Documentation 
+		for a list of available Overlays and their configuration. -->
+	<Overlay
+		class="de.tud.kom.p2psim.impl.overlay.dht.chord2.components.ChordNodeFactory"
+		port="400" />
+
+	<!-- Monitoring a defined time of your simulation using the provided analyzers. 
+		You may also load a visualization as an analyzer, have a look at the configs 
+		in the "visualization"-folder -->
+	<Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="0m" stop="$finishTime">
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.overlay.dht.chord2.analyzer.ChordStructureAnalyzer" />
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.overlay.dht.chord2.analyzer.LookupComplexityAnalyzer" />
+
+	</Monitor>
+
+	<!-- Start some lookups to use the overlay. This is written for chord. -->
+	<LookupGenerator
+		class="de.tud.kom.p2psim.impl.overlay.dht.chord2.analyzer.generator.LookupGenerator"
+		start="50m" />
+
+	<!-- Finally, configure your hosts. Specify the size of the experiment and 
+		all Hosts or Groups of Hosts -->
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="111">
+
+		<!-- Configuration for a single Host in the Group "GlasgowCity" -->
+		<Host groupID="GlasgowCity">
+			<!-- Load previously configured Components into the host -->
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<!-- Provide additional preferences for the host -->
+			<Properties enableChurn="$churn" />
+		</Host>
+
+		<!-- Configuration for a group of hosts with a defined size -->
+		<!-- LatinAmerica max Groupsize = 6838 -->
+		<Group groupID="LatinAmerica" size="50">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+		<!-- Germany max Groupsize = 2912 -->
+		<Group groupID="Germany" size="30">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+		<!-- Florida max Groupsize = 4792 -->
+		<Group groupID="Florida" size="10">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+
+		<!-- NewYork max Groupsize = 3784 -->
+		<Group groupID="NewYork" size="10">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="$churn" />
+		</Group>
+	</HostBuilder>
+
+	<!-- Generate Churn (joining and leaving of hosts) -->
+	<ChurnGenerator class="de.tud.kom.p2psim.impl.churn.DefaultChurnGenerator"
+		start="90m">
+		<!-- Churn provides different statistical models -->
+		<ChurnModel class="de.tud.kom.p2psim.impl.churn.ExponentialChurnModel"
+			churnFactor="0.5" meanSessionLength="60m" />
+	</ChurnGenerator>
+
+	<!-- The Oracle has a list of all Hosts and can be used by analyzers to 
+		calculate statistical properties of your experiment. It should not be used 
+		for functional parts of your simulation! -->
+	<Oracle class="de.tud.kom.p2psim.impl.util.oracle.GlobalOracle" />
+
+	<!-- Load an action.dat-File that consists a list of function calls on a 
+		group of hosts to start actions in your experiment. -->
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions"
+		componentClass="de.tud.kom.p2psim.impl.overlay.dht.chord2.components.ChordNode" />
+
+</Configuration>

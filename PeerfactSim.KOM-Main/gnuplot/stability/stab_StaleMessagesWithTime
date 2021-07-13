@@ -1,0 +1,5 @@
+fileName="stab_StaleMessagesWithTime_"
+set yrange [0:50]
+set ylabel "Stale Messages Ratio (%)"
+
+load "renderMetricCommon.part"

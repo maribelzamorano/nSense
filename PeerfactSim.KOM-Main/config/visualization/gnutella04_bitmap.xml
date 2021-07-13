@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration>
+	<Default>
+		<Variable name="seed" value="0" />
+		<Variable name="finishTime" value="70m" />
+		<Variable name="actions"
+			value="config/visualization/gnutella04-actions_bitmap.dat" />
+		<Variable name="size" value="27" />
+	</Default>
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime" />
+
+	<NetLayer class="de.tud.kom.p2psim.impl.network.gnp.GnpBitmapNetLayerFactory"
+		downBandwidth="50" upBandwidth="25" PbaPeriod="1" experimentSize="$size"
+		bitmapPath="config/visualization/worldmap.bmp">
+		<LatencyModel class="de.tud.kom.p2psim.impl.network.gnp.GnpLatencyModel" />
+		<BandwidthManager
+			class="de.tud.kom.p2psim.impl.network.gnp.GnpNetBandwidthManagerPeriodical" />
+	</NetLayer>
+
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+
+	<GnutellaOverlayNode20
+		class="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaOverlayNodeFactory"
+		delayAcceptConnection="60000000" refresh="60000000" contactTimeout="70000000"
+		descriptorTimeout="1000000" numConn="5" />
+
+	<GnutellaOverlayNode200
+		class="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaOverlayNodeFactory"
+		delayAcceptConnection="60000000" refresh="60000000" contactTimeout="70000000"
+		descriptorTimeout="1000000" numConn="10" />
+
+	<GnutellaOverlayNode2000
+		class="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaOverlayNodeFactory"
+		delayAcceptConnection="60000000" refresh="60000000" contactTimeout="70000000"
+		descriptorTimeout="1000000" numConn="40" />
+
+	<GnutellaOverlayNodeBootstrap
+		class="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaOverlayNodeFactory"
+		delayAcceptConnection="60000000" refresh="60000000" contactTimeout="70000000"
+		descriptorTimeout="1000000" numConn="1000" />
+
+	<Application
+		class="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaApplicationFactory"
+		propUp="0.9" propDel="0.09" propDown="0.9" downloadDelay="20000000" />
+
+	<BootstrapFactory
+		class="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaApplicationFactory"
+		propUp="0.9" propDel="0.09" propDown="0.9" downloadDelay="20000000" />
+
+	<Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="0m" stop="$finishTime">
+		<Analyzer class="de.tud.kom.p2psim.impl.vis.analyzer.VisAnalyzer">
+			<OverlayAdapter
+				class="de.tud.kom.p2psim.impl.overlay.gnutella04.vis.Gnutella04Adapter" />
+		</Analyzer>
+	</Monitor>
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="3011">
+
+		<Host groupID="Bootstrap1">
+			<NetLayer />
+			<TransLayer />
+			<GnutellaOverlayNodeBootstrap />
+			<BootstrapFactory />
+		</Host>
+
+		<Host groupID="Bootstrap2">
+			<NetLayer />
+			<TransLayer />
+			<GnutellaOverlayNodeBootstrap />
+			<BootstrapFactory />
+		</Host>
+
+		<Group groupID="Group1" size="5">
+			<NetLayer />
+			<TransLayer />
+			<GnutellaOverlayNode20 />
+			<Application />
+		</Group>
+
+		<Group groupID="Group2" size="5">
+			<NetLayer />
+			<TransLayer />
+			<GnutellaOverlayNode200 />
+			<Application />
+		</Group>
+
+		<Group groupID="Group3" size="5">
+			<NetLayer />
+			<TransLayer />
+			<GnutellaOverlayNode200 />
+			<Application />
+		</Group>
+
+		<Group groupID="Group4" size="10">
+			<NetLayer />
+			<TransLayer />
+			<GnutellaOverlayNode200 />
+			<Application />
+		</Group>
+	</HostBuilder>
+
+	<VisualizationHelper class="de.tud.kom.p2psim.impl.util.oracle.GlobalOracle" />
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions"
+		componentClass="de.tud.kom.p2psim.impl.overlay.gnutella04.GnutellaApplication" />
+</Configuration>

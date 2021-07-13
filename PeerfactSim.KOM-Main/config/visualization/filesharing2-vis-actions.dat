@@ -1,0 +1,16 @@
+Ecuador 1s FilesharingApplication:join
+Ukraine 2s-50s FilesharingApplication:join
+Denmark 51s-100s FilesharingApplication:join
+Brazil 101s-150s FilesharingApplication:join
+
+Ukraine 151s-160 FilesharingApplication:publishResources 1
+Ecuador 161s-170s FilesharingApplication:lookupResource 1
+
+Ukraine 171s-180s FilesharingApplication:publishResources 2
+Ecuador 181s-190s FilesharingApplication:lookupResource 2
+
+Denmark 191s-200s FilesharingApplication:publishResources 3
+Ecuador 201s-210s FilesharingApplication:lookupResource 3
+
+Denmark 211s-220s FilesharingApplication:publishResources 4
+Ecuador 221s-230s FilesharingApplication:lookupResource 4

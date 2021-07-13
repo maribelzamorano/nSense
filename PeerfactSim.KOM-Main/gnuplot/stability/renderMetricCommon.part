@@ -1,0 +1,111 @@
+set term postscript eps enhanced color "Helvetica, 16" size 12cm, 7cm
+res = "lowRes"
+outputFile="../outputs/".fileName.res.".eps"
+set output outputFile
+set xlabel "Time"
+set xrange [8300:10800]
+set xtics ("t0" 8400, "t0 + 10min" 9000, "t0 + 20min" 9600, "t0 + 30min" 10200)
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+set style line 1 lt 1 lw 3
+inputfile1="../../outputs/".overlayName1."/".fileName.res
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+set style line 2 lt 2 lw 3
+inputfile2="../../outputs/".overlayName2."/".fileName.res
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+set style line 3 lt 3 lw 3
+inputfile3="../../outputs/".overlayName3."/".fileName.res
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+set style line 4 lt 4 lw 3
+inputfile4="../../outputs/".overlayName4."/".fileName.res
+	
+plot inputfile1 using 1:3 title overlayNiceName1 linestyle 1 with lines, inputfile1 using 1:3:2:4 title "" linestyle 1 with errorbars, \
+	inputfile2 using 1:3 title overlayNiceName2 linestyle 2 with lines, inputfile2 using 1:3:2:4 title "" linestyle 2 with errorbars, \
+	inputfile3 using 1:3 title overlayNiceName3 linestyle 3 with lines, inputfile3 using 1:3:2:4 title "" linestyle 3 with errorbars, \
+	inputfile4 using 1:3 title overlayNiceName4 linestyle 4 with lines, inputfile4 using 1:3:2:4 title "" linestyle 4 with errorbars
+	
+system 'epstopdf '.outputFile
+system 'rm '.outputFile
+
+#========= Med resolution ============
+
+set term postscript eps enhanced color "Helvetica, 16" size 12cm, 7cm
+res = "medRes"
+outputFile="../outputs/".fileName.res.".eps"
+set output outputFile
+set xlabel "Time"
+set xrange [8340:9000]
+set xtics ("t0" 8400, "t0 + 4min" 8640, "t0 + 8min" 8880)
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+set style line 1 lt 1 lw 3
+inputfile1="../../outputs/".overlayName1."/".fileName.res
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+set style line 2 lt 2 lw 3
+inputfile2="../../outputs/".overlayName2."/".fileName.res
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+set style line 3 lt 3 lw 3
+inputfile3="../../outputs/".overlayName3."/".fileName.res
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+set style line 4 lt 4 lw 3
+inputfile4="../../outputs/".overlayName4."/".fileName.res
+
+plot inputfile1 using 1:3 title overlayNiceName1 linestyle 1 with lines, inputfile1 using 1:3:2:4 title "" linestyle 1 with errorbars, \
+	inputfile2 using 1:3 title overlayNiceName2 linestyle 2 with lines, inputfile2 using 1:3:2:4 title "" linestyle 2 with errorbars, \
+	inputfile3 using 1:3 title overlayNiceName3 linestyle 3 with lines, inputfile3 using 1:3:2:4 title "" linestyle 3 with errorbars, \
+	inputfile4 using 1:3 title overlayNiceName4 linestyle 4 with lines, inputfile4 using 1:3:2:4 title "" linestyle 4 with errorbars
+	
+system 'epstopdf '.outputFile
+system 'rm '.outputFile
+
+#========= High resolution ============
+
+set term postscript eps enhanced color "Helvetica, 16" size 12cm, 7cm
+res = "highRes"
+outputFile="../outputs/".fileName.res.".eps"
+set output outputFile
+set xlabel "Time"
+set xrange [8380:8700]
+set xtics ("t0" 8400, "t0 + 2min" 8520, "t0 + 4min" 8640)
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+set style line 1 lt 1 lw 3
+inputfile1="../../outputs/".overlayName1."/".fileName.res
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+set style line 2 lt 2 lw 3
+inputfile2="../../outputs/".overlayName2."/".fileName.res
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+set style line 3 lt 3 lw 3
+inputfile3="../../outputs/".overlayName3."/".fileName.res
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+set style line 4 lt 4 lw 3
+inputfile4="../../outputs/".overlayName4."/".fileName.res
+
+plot inputfile1 using 1:3 title overlayNiceName1 linestyle 1 with lines, inputfile1 using 1:3:2:4 title "" linestyle 1 with errorbars, \
+	inputfile2 using 1:3 title overlayNiceName2 linestyle 2 with lines, inputfile2 using 1:3:2:4 title "" linestyle 2 with errorbars, \
+	inputfile3 using 1:3 title overlayNiceName3 linestyle 3 with lines, inputfile3 using 1:3:2:4 title "" linestyle 3 with errorbars, \
+	inputfile4 using 1:3 title overlayNiceName4 linestyle 4 with lines, inputfile4 using 1:3:2:4 title "" linestyle 4 with errorbars
+	
+system 'epstopdf '.outputFile
+system 'rm '.outputFile

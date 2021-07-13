@@ -1,0 +1,7 @@
+fileName="scal_qSuccessWithDocType"
+outputFile="../outputs/scal_qSuccessWithDocType"
+set yrange [0:135]
+set nolog y
+set ylabel "Query Success (%)"
+
+load "renderDoctypesCommon.part"

@@ -1,0 +1,10 @@
+fileName="scal_staleContactsWithHosts"
+outputFileName="scal_staleContactsZoomWithHosts"
+set yrange [0:1.5]
+set nolog y
+set ylabel "Stale Contacts (%)"
+
+set key right
+
+load "renderMetricCommon.part"
+

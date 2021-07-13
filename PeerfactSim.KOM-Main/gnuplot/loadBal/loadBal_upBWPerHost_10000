@@ -1,0 +1,8 @@
+fileName="BWDist_10000"
+outputFileName="loadBal_upBWPerHost_10000"
+yValue=3
+
+set yrange [0:500]
+set ylabel "Upstream Bandwidth Distribution per Host (bytes/sec)"
+
+load "renderMetricCommon.part"

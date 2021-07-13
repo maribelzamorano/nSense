@@ -1,0 +1,9 @@
+fileName="scal_avgNHopsWithHosts"
+outputFileName=fileName
+set yrange [1:600]
+set log y
+set ylabel "Average Number of Hops"
+
+set key left
+
+load "renderMetricCommon.part"

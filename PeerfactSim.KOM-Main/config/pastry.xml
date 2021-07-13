@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration>
+	<!-- Description of the Simulation -->
+	<Description>Simulation of Pastry with 100 nodes and churn
+	</Description>
+
+	<!-- Here the variables are defined. They can be referred as "&variable-name" 
+		and overridden via -->
+	<Default>
+		<Variable name="seed" value="500" />
+		<Variable name="finishTime" value="120m" />
+		<Variable name="actions" value="config/pastry-actions.dat" />
+		<Variable name="gnpDataFile" value="data/measured_data.xml" />
+		<!-- Variable for enabling churn -->
+		<Variable name="churn" value="true" />
+		<Variable name="NetLayer" value="Mod" />
+	</Default>
+
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$finishTime" />
+
+	<IfEqualStr arg0="$NetLayer" arg1="Mod">
+
+		<NetLayer
+			class="de.tud.kom.p2psim.impl.network.modular.ModularNetLayerFactory"
+			preset="GNP" useRegionGroups="false" useInOrderDelivery="true">
+			<BandwidthDetermination
+				class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+			<MeasurementDB
+				class="de.tud.kom.p2psim.impl.network.modular.db.NetMeasurementDB"
+				file="data/mod_measured_data.xml" />
+		</NetLayer>
+
+	</IfEqualStr>
+
+	<IfEqualStr arg0="$NetLayer" arg1="GNP">
+		<NetLayer class="de.tud.kom.p2psim.impl.network.gnp.GnpNetLayerFactory"
+			gnpFile="data/measured_data.xml">
+			<LatencyModel class="de.tud.kom.p2psim.impl.network.gnp.GnpLatencyModel"
+				usePingErRttData="false" usePingErJitter="false"
+				usePingErPacketLoss="true" />
+			<BandwidthManager
+				class="de.tud.kom.p2psim.impl.network.gnp.GnpNetBandwidthManagerPeriodical" />
+			<BandwidthDetermination
+				class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+		</NetLayer>
+
+	</IfEqualStr>
+
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+
+	<Overlay class="de.tud.kom.p2psim.impl.overlay.dht.pastry.PastryNodeFactory" />
+
+	<Monitor class="de.tud.kom.p2psim.impl.common.DefaultMonitor"
+		start="0m" stop="$finishTime">
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.overlay.dht.pastry.analyzer.OverlayStructureAnalyzer" />
+
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.overlay.dht.pastry.analyzer.LookupAnalyzer" />
+
+	</Monitor>
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.scenario.DefaultHostBuilder"
+		experimentSize="100">
+
+		<Group groupID="GlasgowCity" size="100">
+			<NetLayer />
+			<TransLayer />
+			<Overlay />
+			<Properties enableChurn="false" />
+		</Group>
+
+	</HostBuilder>
+
+	<Oracle class="de.tud.kom.p2psim.impl.util.oracle.GlobalOracle" />
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions" componentClass="de.tud.kom.p2psim.impl.overlay.dht.pastry.PastryNode" />
+
+</Configuration>

@@ -1,0 +1,9 @@
+fileName="scal_bwWithHosts"
+outputFileName=fileName
+set nolog y
+set yrange [0:400]
+set ylabel "Downstream Bandwidth (bytes/sec)"
+
+set key right
+
+load "renderMetricCommon.part"

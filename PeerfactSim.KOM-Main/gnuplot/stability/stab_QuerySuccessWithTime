@@ -1,0 +1,5 @@
+fileName="stab_QuerySuccessWithTime_"
+set yrange [0:110]
+set ylabel "Query Success (%)"
+
+load "renderMetricCommon.part"

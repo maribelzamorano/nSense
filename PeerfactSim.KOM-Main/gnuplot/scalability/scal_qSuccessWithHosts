@@ -1,0 +1,9 @@
+fileName="scal_qSuccessWithHosts"
+outputFileName=fileName
+set yrange [0:130]
+set nolog y
+set ylabel "Query Success (%)"
+
+set key right
+
+load "renderMetricCommon.part"

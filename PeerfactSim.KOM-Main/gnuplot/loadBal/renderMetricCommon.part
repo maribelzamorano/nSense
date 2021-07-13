@@ -1,0 +1,97 @@
+set term postscript eps enhanced color "Helvetica, 16" size 14cm, 7cm
+outputFile="../outputs/".outputFileName.".eps"
+set output outputFile
+set xlabel "Sorted Peer Distribution"
+set xrange [1:0]
+unset border
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+inputfile1="../../outputs/".overlayName1."/".fileName
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+inputfile2="../../outputs/".overlayName2."/".fileName
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+inputfile3="../../outputs/".overlayName3."/".fileName
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+inputfile4="../../outputs/".overlayName4."/".fileName
+
+plot inputfile1 using 2:yValue title overlayNiceName1 with lines lw 5, \
+	inputfile2 using 2:yValue title overlayNiceName2 with lines lw 5, \
+	inputfile3 using 2:yValue title overlayNiceName3 with lines lw 5, \
+	inputfile4 using 2:yValue title overlayNiceName4 with lines lw 5
+
+system 'epstopdf '.outputFile
+system 'rm '.outputFile
+
+
+oldFileName=fileName
+
+append="_300d"
+outputFile="../outputs/".outputFileName.append.".eps"
+set output outputFile
+fileName = oldFileName . append
+set xlabel "Sorted Peer Distribution"
+set xrange [1:0]
+unset border
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+inputfile1="../../outputs/".overlayName1."/".fileName
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+inputfile2="../../outputs/".overlayName2."/".fileName
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+inputfile3="../../outputs/".overlayName3."/".fileName
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+inputfile4="../../outputs/".overlayName4."/".fileName
+
+plot inputfile1 using 2:yValue title overlayNiceName1 with lines lw 5, \
+	inputfile2 using 2:yValue title overlayNiceName2 with lines lw 5, \
+	inputfile3 using 2:yValue title overlayNiceName3 with lines lw 5, \
+	inputfile4 using 2:yValue title overlayNiceName4 with lines lw 5
+
+system 'epstopdf '.outputFile
+system 'rm '.outputFile
+
+append="_voip"
+outputFile="../outputs/".outputFileName.append.".eps"
+set output outputFile
+fileName = oldFileName . append
+set xlabel "Sorted Peer Distribution"
+set xrange [1:0]
+unset border
+
+overlayName1="fs_gnutella"
+overlayNiceName1="Gnutella(0.6)"
+inputfile1="../../outputs/".overlayName1."/".fileName
+
+overlayName2="fs_kademlia"
+overlayNiceName2="Kademlia"
+inputfile2="../../outputs/".overlayName2."/".fileName
+
+overlayName3="fs_gia"
+overlayNiceName3="Gia"
+inputfile3="../../outputs/".overlayName3."/".fileName
+
+overlayName4="fs_chord"
+overlayNiceName4="Chord"
+inputfile4="../../outputs/".overlayName4."/".fileName
+
+plot inputfile1 using 2:yValue title overlayNiceName1 with lines lw 5, \
+	inputfile2 using 2:yValue title overlayNiceName2 with lines lw 5, \
+	inputfile3 using 2:yValue title overlayNiceName3 with lines lw 5, \
+	inputfile4 using 2:yValue title overlayNiceName4 with lines lw 5
+
+system 'epstopdf '.outputFile
+system 'rm '.outputFile

@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Configuration>
+	<!-- Description of the Simulation -->
+	<Description>Simulation of a SkyNet, a tree-based monitoring solution
+		on top of a centralized DHT. Churn is enabled and two different churn
+		models are
+		applied during the simulation</Description>
+
+	<!-- Here the variables are defined. They can be referred as "&variable-name" 
+		and overridden via -->
+	<Default>
+		<!-- General settings for the simulation -->
+		<Variable name="seed" value="942" />
+		<Variable name="size" value="500" />
+		<Variable name="actions" value="config/skynet/skynetOnNapster-actions.dat" />
+		<Variable name="skynetProperties" value="skynet.properties" />
+		<Variable name="end" value="10000s" />
+		<Variable name="gnpDataFile" value="data/measured_data.xml" />
+		<!-- Variable for enabling churn -->
+		<Variable name="churn" value="true" />
+
+		<!-- Variables for the settings of SkyNetBatchSimulation -->
+		<Variable name="protectFormerSimulations" value="false" />
+
+		<!-- Variables for the StatisticWriter to write training- or test-files -->
+		<Variable name="training" value="true" />
+		<Variable name="append" value="false" />
+	</Default>
+	
+	<SimulatorCore class="de.tud.kom.p2psim.impl.simengine.Simulator"
+		static="getInstance" seed="$seed" finishAt="$end">
+	</SimulatorCore>
+	
+	<NetLayer class="de.tud.kom.p2psim.impl.network.gnp.GnpNetLayerFactory"
+			gnpFile="data/measured_data.xml">
+			<LatencyModel class="de.tud.kom.p2psim.impl.network.gnp.GnpLatencyModel"
+				usePingErRttData="false" usePingErJitter="false"
+				usePingErPacketLoss="true" />
+			<BandwidthManager
+				class="de.tud.kom.p2psim.impl.network.gnp.GnpNetBandwidthManagerPeriodical" />
+		</NetLayer>
+		
+	<TransLayer class="de.tud.kom.p2psim.impl.transport.DefaultTransLayerFactory" />
+	
+	<NapsterDHT
+		class="de.tud.kom.p2psim.impl.overlay.dht.napster.NapsterClientServerFactory"
+		port="400" />
+
+	<SkyNet class="de.tud.kom.p2psim.impl.skynet.SkyNetNodeFactory"
+		port="500" simulationSize="$size">
+	</SkyNet>
+	
+	<SkyNetPropertiesReader
+		class="de.tud.kom.p2psim.impl.skynet.SkyNetPropertiesReader" static="getInstance"
+		propertiesFile="$skynetProperties">
+	</SkyNetPropertiesReader>
+	
+	<SkyNetBatchSimulator
+		class="de.tud.kom.p2psim.impl.skynet.SkyNetBatchSimulator" static="getInstance"
+		protectFormerSimulations="$protectFormerSimulations" churn="$churn"
+		simulationType="Napster" simulationSeed="$seed" simulationSize="$size"
+		simulationDuration="$end">
+	</SkyNetBatchSimulator>
+	
+	<User />
+
+	<Monitor class="de.tud.kom.p2psim.impl.skynet.analyzing.SkyNetMonitor"
+		start="1m" stop="$end">
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.skynet.analyzing.analyzers.NetLayerAnalyzer"
+			simulationSize="$size" />
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.skynet.analyzing.analyzers.OPAnalyzer"
+			simulationSize="$size" />
+		<Analyzer
+			class="de.tud.kom.p2psim.impl.skynet.analyzing.analyzers.ChurnStatisticsAnalyzer"
+			simulationSize="$size">
+			<AnalyzerDelegator
+				class="de.tud.kom.p2psim.impl.skynet.overlay2SkyNet.NapsterAnalyzerDelegator" />
+		</Analyzer>
+	</Monitor>
+
+	<HostBuilder class="de.tud.kom.p2psim.impl.skynet.SkyNetHostBuilder"
+		experimentSize="$size">
+		<Host groupID="France">
+			<!-- 100 Mbit down and Up in byte -->
+			<NetLayer upBandwidth="12500000" downBandwidth="12500000" />
+			<TransLayer />
+			<NapsterDHT isServer="true" />
+			<Properties enableChurn="false" cpu="4096" ram="8192"
+				storage="1024" tresholdPercentage="80" downBandwidthPercentage="5"
+				upBandwidthPercentage="0" />
+		</Host>
+
+		<!--First Group LatinAmerica max Groupsize = 6838 -->
+		<Group size="299" groupID="LatinAmerica">
+			<NetLayer>
+				<BandwidthDetermination
+					class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+			</NetLayer>
+			<TransLayer />
+			<NapsterDHT isServer="false" />
+			<SkyNet />
+			<Properties enableChurn="$churn" cpu="4096" ram="8192"
+				storage="1024" tresholdPercentage="80" downBandwidthPercentage="5"
+				upBandwidthPercentage="15" />
+		</Group>
+
+		<!--Second Group Germany max Groupsize = 2912 -->
+		<Group size="100" groupID="Germany">
+			<NetLayer>
+				<BandwidthDetermination
+					class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+			</NetLayer>
+			<TransLayer />
+			<NapsterDHT isServer="false" />
+			<SkyNet />
+			<Properties enableChurn="$churn" cpu="4096" ram="8192"
+				storage="1024" tresholdPercentage="80" downBandwidthPercentage="5"
+				upBandwidthPercentage="15" />
+		</Group>
+
+		<!--Third Group Florida max Groupsize = 4792 -->
+		<Group size="100" groupID="Florida">
+			<NetLayer>
+				<BandwidthDetermination
+					class="de.tud.kom.p2psim.impl.network.bandwidthDetermination.OECDReportBandwidthDetermination" />
+			</NetLayer>
+			<TransLayer />
+			<NapsterDHT isServer="false" />
+			<SkyNet />
+			<Properties enableChurn="$churn" cpu="4096" ram="8192"
+				storage="1024" tresholdPercentage="80" downBandwidthPercentage="5"
+				upBandwidthPercentage="15" />
+		</Group>
+
+	</HostBuilder>
+	<StatisticWriter
+		class="de.tud.kom.p2psim.impl.skynet.analyzing.writers.StatisticWriter"
+		start="1m" stop="$end" training="$training" churn="$churn" append="$append" />
+	<QueryAnalyzer
+		class="de.tud.kom.p2psim.impl.skynet.analyzing.analyzers.QueryAnalyzer"
+		start="1m" stop="$end" simulationSize="$size" />
+
+	<!-- Begin Churn definitions -->
+
+	<Churn_Exponential class="de.tud.kom.p2psim.impl.churn.DefaultChurnGenerator"
+		start="4500s" stop="5500s">
+		<ChurnModel class="de.tud.kom.p2psim.impl.churn.ExponentialChurnModel"
+			churnFactor="0.4" meanSessionLength="60m" />
+	</Churn_Exponential>
+
+	<ChurnKad class="de.tud.kom.p2psim.impl.churn.DefaultChurnGenerator"
+		start="6400s" stop="$end">
+		<ChurnModel class="de.tud.kom.p2psim.impl.churn.KadChurnModel" />
+	</ChurnKad>
+
+	<!-- End Churn definitions -->
+
+	<Scenario class="de.tud.kom.p2psim.impl.scenario.CSVScenarioFactory"
+		actionsFile="$actions"
+		componentClass="de.tud.kom.p2psim.impl.overlay.dht.napster.components.NapsterClientNode"
+		additionalClasses="de.tud.kom.p2psim.impl.skynet.components.SkyNetNode">
+		<ParamParser class="de.tud.kom.p2psim.impl.overlay.cd.DocumentParser" />
+		<ParamParser
+			class="de.tud.kom.p2psim.impl.overlay.dht.centralized.OverlayKeyParser" />
+	</Scenario>
+</Configuration>
